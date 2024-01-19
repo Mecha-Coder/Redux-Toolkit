@@ -1,33 +1,28 @@
-import { useSelector } from "react-redux"
-import PostAuthor from "./PostAuthor"
-import PostTimeStamp from "./PostTimeStamp"
-import PostReaction from  "./PostReaction"
+import React, {useEffect} from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { fetchPost } from "../app/postSlice"
+import Post from "./Post"
 
-import React from 'react'
 
 function List() {
-  const post = useSelector(state=>state.post)
+  const dispatch = useDispatch()
+  const {data, loading, error} = useSelector(state=>state.post)
 
-  //Sort by latest post
-  const list = post.slice()
-  list.sort((a,b)=> b.timestamp - a.timestamp)
+  useEffect(()=>{
+    dispatch(fetchPost())
+  },[dispatch])
 
-  const renderlist = list.map(item=>(
-    <article key={item.id}>
-      <h3>{item.title}</h3>
-      <p>{item.content.substring(0,100)}</p>
-      <PostAuthor user={item.user}/>
-      <PostTimeStamp time={item.timestamp} />
-      <PostReaction id={item.id} reaction={item.reaction} />
-    </article>
-  ))
-
-  return (
-    <section>
-      <h2>Posts</h2>
-      {renderlist}
-    </section>
-  )
+  if (loading)   {return <h2>Loading...</h2>}
+  else if(error) {return <h2>Error: {error}</h2>}
+  
+  else if (!loading && !error){
+    return (
+      <section>
+        <h2>Posts</h2>
+        <Post post={data} />
+      </section>
+    )
+  }
 }
 
 export default List

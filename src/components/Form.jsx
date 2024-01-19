@@ -1,5 +1,5 @@
 import React, {useRef} from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch} from 'react-redux'
 import { addPost } from '../app/postSlice'
 
 function Form() {
@@ -7,11 +7,14 @@ function Form() {
   const getContent = useRef()
   const getAuthor = useRef()
   const dispatch = useDispatch()
-  const user = useSelector(state=>state.user)
+  const {data} = useSelector(state=>state.user)
   
-  const generateAuthor = user.map(user=>
-    <option key={user.id} value={user.name}>{user.name}</option>
+
+
+  const generateAuthor = data.map(user=>
+    <option key={user.id} value={user.id}>{user.name}</option>
   )
+
 
   function handleSubmit(e){
     e.preventDefault()
@@ -26,6 +29,8 @@ function Form() {
     getContent.current.value = ""
     getAuthor.current.value = ""
   }
+
+
 
   return (
     <section>
